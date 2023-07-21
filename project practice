@@ -1,0 +1,62 @@
+
+#Do different schools (.edu domains) prefer different courses?
+
+WITH cpp AS(
+SELECT users.email_domain, 
+ROUND(100.0 * SUM(CASE WHEN progress.learn_cpp = 'completed' OR 'started' THEN 1 ELSE 0 END)/COUNT(*)) AS CPP
+FROM users
+JOIN progress
+ON users.user_id
+= progress.user_id
+GROUP BY 1),
+
+sql AS(
+SELECT users.email_domain, 
+ROUND(100.0 * SUM(CASE WHEN progress.learn_sql = 'completed' OR 'started' THEN 1 ELSE 0 END)/COUNT(*)) AS SQL
+FROM users
+JOIN progress
+ON users.user_id
+= progress.user_id
+GROUP BY 1),
+
+html AS(
+SELECT users.email_domain, 
+ROUND(100.0 * SUM(CASE WHEN progress.learn_html = 'completed' OR 'started' THEN 1 ELSE 0 END)/COUNT(*)) AS HTML
+FROM users
+JOIN progress
+ON users.user_id
+= progress.user_id
+GROUP BY 1),
+
+javascript AS(
+SELECT users.email_domain, 
+ROUND(100.0 * SUM(CASE WHEN progress.learn_javascript = 'completed' OR 'started' THEN 1 ELSE 0 END)/COUNT(*)) AS JAVASCRIPT
+FROM users
+JOIN progress
+ON users.user_id
+= progress.user_id
+GROUP BY 1),
+
+java AS(
+SELECT users.email_domain, 
+ROUND(100.0 * SUM(CASE WHEN progress.learn_java = 'completed' OR 'started' THEN 1 ELSE 0 END)/COUNT(*)) AS JAVA
+FROM users
+JOIN progress
+ON users.user_id
+= progress.user_id
+GROUP BY 1)
+
+SELECT users.email_domain, cpp.CPP, sql.SQL,html.HTML, javascript.JAVASCRIPT, java.JAVA
+FROM users
+JOIN cpp
+ON users.email_domain=cpp.email_domain
+JOIN sql
+ON users.email_domain=sql.email_domain
+JOIN html
+ON users.email_domain=html.email_domain
+JOIN javascript
+ON users.email_domain=javascript.email_domain
+JOIN java
+ON users.email_domain=java.email_domain
+GROUP BY 1
+LIMIT 10;
